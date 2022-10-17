@@ -21,7 +21,7 @@ route.post("/", async(req,res)=> {
   res.json(user)
 })
 
-route.patch("/:username/join", async (req, res) => {
+route.patch("/:username/join/:id", async (req, res) => {
   const userJoin = await prisma.user.update({
      where: {
       username: req.params.username
@@ -29,7 +29,7 @@ route.patch("/:username/join", async (req, res) => {
   data:{
    game:{
      connect:{
-       game_id: req.body.game_id
+        game_id: parseInt(req.params.id)
      }
    }
   } 
