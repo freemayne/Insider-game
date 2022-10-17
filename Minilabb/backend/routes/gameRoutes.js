@@ -48,6 +48,8 @@ route.patch("/:id/end", async (req, res) => {
 })
 })
 
+export default route
+
 
 
 

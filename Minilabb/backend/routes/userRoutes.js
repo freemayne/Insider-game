@@ -52,3 +52,4 @@ route.patch("/:username/create", async (req, res) => {
 res.json(userJoin)
 })
 
+export default route
