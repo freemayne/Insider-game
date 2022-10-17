@@ -21,4 +21,33 @@ route.post("/", async(req,res)=> {
   res.json(game)
 })
 
+route.patch("/:id/join", async (req, res) => {
+   const game = await prisma.game.update({
+      where: {
+       id: parseInt(req.params.id)
+   },
+   data:{
+    user:{
+      connect:{
+        username: req.body.username
+      }
+    }
+   } 
+})
+})
+
+route.patch("/:id/end", async (req, res) => {
+  const game = await prisma.game.update({
+     where: {
+      id: parseInt(req.params.id)
+  },
+  data:{
+    isActive: false
+  
+  } 
+})
+})
+
+
+
 
