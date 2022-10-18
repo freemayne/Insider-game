@@ -1,10 +1,12 @@
-
+import {useNavigate} from 'react-router-dom';
 import { useState } from "react"
 import {Box, Button, Input} from "@mui/material"
 
 
 
 const GameStart = () => {
+
+  const navigate = useNavigate();
 
     const [username, setUsername] = useState("") 
     const [gameId, setGameId] = useState("")
@@ -46,7 +48,8 @@ const GameStart = () => {
           body: JSON.stringify(data)
         }
       );
-      console.log(result)
+
+     
     };
     const handleJoinGame = async () => {
     
@@ -59,7 +62,15 @@ const GameStart = () => {
         
         }
       );
-      console.log(result)
+        if(result.status === 200){
+          console.log("true")
+          console.log(result)
+          navigate(`/gamelobby/${gameId}`)
+        }else{
+          console.log("false")
+        }
+        
+                
     };
   
 
@@ -81,7 +92,7 @@ const GameStart = () => {
     onChange={ handleChangeGameId}
     />
     <Button onClick={handleHostGame}>craete</Button>
-    <Button onClick={handleJoinGame}>Join</Button>
+    <Button onClick={handleJoinGame} >Join</Button>
     
   </Box>
 
