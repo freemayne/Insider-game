@@ -16,6 +16,7 @@ model user {
 
 model game {
   game_id  Int     @id @default(autoincrement())
+  host String
   isActive Boolean
   gameStart Boolean
   user     user[]

@@ -54,6 +54,7 @@ route.patch("/:username/create", async (req, res) => {
   data:{
    game:{
      create:{
+      host: req.params.username,
        isActive: true,
        gameStart: false
      }

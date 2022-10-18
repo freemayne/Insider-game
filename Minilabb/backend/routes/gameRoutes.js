@@ -18,6 +18,7 @@ route.get("/:id", async(req,res) => {
     }, 
       select:{
         game_id: true,
+        host: true,
         isActive: true,
         gameStart: true,
         user: true}
@@ -33,6 +34,7 @@ route.get("/:id", async(req,res) => {
 route.post("/", async(req,res)=> {
   const game = await prisma.game.create({
       data:{
+        host: req.params.username,
         isActive: true
       }
   })

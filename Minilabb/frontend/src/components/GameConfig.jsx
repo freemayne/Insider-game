@@ -3,6 +3,16 @@ import React, { useState } from "react";
 import { Box, Button, Input } from "@mui/material";
 
 const GameConfig = () => {
+
+
+  
+    let roles = ["Master", "Insider"]
+  
+    for (let index = 2; index <= 6; index++) {
+      roles.push("commoner")
+      
+    }
+    console.log(roles)
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
@@ -33,7 +43,9 @@ const GameConfig = () => {
   };
   const handleHostGame = async () => {
     const data = {
+      host: username,
       isActive: true
+      
     }
 
     const result = await fetch(

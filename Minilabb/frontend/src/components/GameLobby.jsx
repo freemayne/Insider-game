@@ -59,8 +59,11 @@ const GameLobby = () => {
     if(result.status === 200){
       console.log('Game Started');
     }
-
-        
+      }
+      const IsHost = ()=>{
+        if(lobby.host === user.username){
+          return <Button onClick={handleStartGame}> Start Game</Button>
+        }
       }
 
   return (
@@ -76,7 +79,7 @@ const GameLobby = () => {
 
     ))}
       </Box>
-    <Button onClick={handleStartGame}>Start Game</Button>
+    <IsHost/>
     <Box>{showRole(user.role)}</Box>
   </Box>
   )
