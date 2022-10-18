@@ -11,6 +11,16 @@ route.get("/", async(req,res) => {
 )
 
 
+route.get("/:username", async(req,res) => {
+  const user = await prisma.user.findUnique({
+    where:{
+      username: req.params.username
+    }
+  })
+  res.json(user)
+}
+)
+
 route.post("/", async(req,res)=> {
   const user = await prisma.user.create({
       data:{
@@ -44,7 +54,8 @@ route.patch("/:username/create", async (req, res) => {
   data:{
    game:{
      create:{
-       isActive: true
+       isActive: true,
+       gameStart: false
      }
    }
   } 

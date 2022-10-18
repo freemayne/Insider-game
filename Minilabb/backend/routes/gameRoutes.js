@@ -6,10 +6,28 @@ const route = express.Router();
 
 
 route.get("/", async(req,res) => {
-  const games = await prisma.game.findMany()
-  res.json(games)
+  const game = await prisma.game.findMany()
+  res.json(game)
 }
 )
+
+route.get("/:id", async(req,res) => {
+  const game = await prisma.game.findUnique({
+    where: {
+      game_id: parseInt(req.params.id)
+    }, 
+      select:{
+        game_id: true,
+        isActive: true,
+        gameStart: true,
+        user: true}
+    }
+  )
+  res.json(game)
+}
+)
+
+
 
 
 route.post("/", async(req,res)=> {
@@ -24,7 +42,7 @@ route.post("/", async(req,res)=> {
 route.patch("/:id/join", async (req, res) => {
    const game = await prisma.game.update({
       where: {
-       id: parseInt(req.params.id)
+       game_id: parseInt(req.params.id)
    },
    data:{
     user:{
@@ -39,7 +57,7 @@ route.patch("/:id/join", async (req, res) => {
 route.patch("/:id/end", async (req, res) => {
   const game = await prisma.game.update({
      where: {
-      id: parseInt(req.params.id)
+      game_id: parseInt(req.params.id)
   },
   data:{
     isActive: false
@@ -47,6 +65,20 @@ route.patch("/:id/end", async (req, res) => {
   } 
 })
 })
+
+route.patch("/:id/start", async (req, res) => {
+  const game = await prisma.game.update({
+     where: {
+      game_id: parseInt(req.params.id)
+  },
+  data:{
+    gameStart: true
+  
+  } 
+})
+res.json(game)
+})
+
 
 export default route
 
