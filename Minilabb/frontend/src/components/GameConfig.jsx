@@ -1,18 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
-import { Box, Button, Input } from "@mui/material";
+import { Box, Button, Input, Typography } from "@mui/material";
+import imageInsider from "./InsiderGame.avif";
 
 const GameConfig = () => {
-
-
-  
-    let roles = ["Master", "Insider"]
-  
-    for (let index = 2; index <= 6; index++) {
-      roles.push("commoner")
-      
-    }
-    console.log(roles)
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
@@ -44,9 +35,8 @@ const GameConfig = () => {
   const handleHostGame = async () => {
     const data = {
       host: username,
-      isActive: true
-      
-    }
+      isActive: true,
+    };
 
     const result = await fetch(
       `http://localhost:5000/user/${username}/create`,
@@ -77,22 +67,101 @@ const GameConfig = () => {
 
   return (
     <Box>
-      <Input
-        type="text"
-        name="message"
-        value={username}
-        onChange={handleChangeUsername}
-      />
-      <Button onClick={handleSave}>Add</Button>
-      <Input
-        type="text"
-        placeholder="input Game Id"
-        name="message"
-        value={gameId}
-        onChange={handleChangeGameId}
-      />
-      <Button onClick={handleHostGame}>craete</Button>
-      <Button onClick={handleJoinGame}>Join</Button>
+      <Typography
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          mt: 4,
+          fontSize: 28,
+          fontFamily: "Silkscreen",
+        }}
+      >
+        Welcome to Insider
+      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          margin: "auto",
+          width: 250,
+          mt: 4,
+        }}
+        component={"img"}
+        src={imageInsider}
+      ></Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          mt: 8,
+        }}
+      >
+        <Input
+          type="text"
+          name="message"
+          placeholder="Enter your username"
+          value={username}
+          onChange={handleChangeUsername}
+          sx={{
+            mr: 2,
+          }}
+        />
+        <Button
+          variant="contained"
+          onClick={handleSave}
+          sx={{
+            fontFamily: "Silkscreen",
+            bgcolor: "black",
+          }}
+        >
+          Create
+        </Button>
+      </Box>
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          mt: 1,
+          mb: 2,
+        }}
+      >
+        <Input
+          type="text"
+          placeholder="Input game id"
+          name="message"
+          value={gameId}
+          onChange={handleChangeGameId}
+          sx={{
+            mr: 2,
+          }}
+        />
+        <Button
+          variant="contained"
+          onClick={handleHostGame}
+          sx={{
+            fontFamily: "Silkscreen",
+            bgcolor: "black",
+          }}
+        >
+          Create Game
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleJoinGame}
+          sx={{
+            fontFamily: "Silkscreen",
+            bgcolor: "red",
+            color: "black",
+            ml: 1,
+          }}
+        >
+          Join Game
+        </Button>
+      </Box>
     </Box>
   );
 };

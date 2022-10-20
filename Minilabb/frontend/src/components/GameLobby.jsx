@@ -15,12 +15,13 @@ const GameLobby = () => {
     const fetchData = async (id) => {
       const result = await fetch(`http://localhost:5000/game/${id}`);
       const jsonResult = await result.json();
-      setLobby(jsonResult);
-      setLobbyUsers(jsonResult.user);
+      if (JSON.stringify(jsonResult) !== JSON.stringify(lobby)) {
+        setLobby(jsonResult);
+        setLobbyUsers(jsonResult.user);
+      }
     };
     fetchData(id);
-    
-  }, []);
+  }, [lobbyUsers]);
 
   useEffect(() => {
     const fetchUserData = async (username) => {
@@ -34,26 +35,25 @@ const GameLobby = () => {
   console.log(lobby);
   console.log(lobbyUsers);
   console.log(user);
-
-  //under construction
+  
 
   const modifyRoleList = () => {
     let roles = ["Master", "Insider"];
 
-    for (let index = 2; index < lobbyUsers.length ; index++) {
+    for (let index = 2; index < lobbyUsers.length; index++) {
       roles.push("Commoner");
     }
-    console.log(roles)
+    console.log(roles);
     lobbyUsers.forEach((user) => {
-      let index = Math.floor(Math.random() * roles.length )
-      console.log(index)
+      let index = Math.floor(Math.random() * roles.length);
+      console.log(index);
       user.role = roles[index];
-      roles.splice(index, 1)
-    
-      console.log(roles)
+      roles.splice(index, 1);
+
+      console.log(roles);
     });
   };
-/*   const resetRoles = () => {
+  /*   const resetRoles = () => {
     lobbyUsers.forEach((user) => {
       user.role = "";
     });
@@ -62,14 +62,11 @@ const GameLobby = () => {
   const showRole = () => {
     if (lobby.gameStart === true) {
       let u = lobbyUsers.find((user) => user.username === username);
-      user.role = u.role;  
-    } 
-    
-
-  
-      return role ? `your role is ${user.role}` : null;
+      user.role = u.role;
     }
-  
+
+    return role ? `your role is ${user.role}` : null;
+  };
 
   const handleStartGame = async () => {
     const result = await fetch(`http://localhost:5000/game/${id}/start`, {
@@ -105,12 +102,10 @@ const GameLobby = () => {
   };
 
   const startGame = () => {
-   
     return <Button onClick={handleStartGame}> Start Game</Button>;
   };
 
   const endGame = () => {
-    
     return <Button onClick={handleEndGame}> End Game</Button>;
   };
 
