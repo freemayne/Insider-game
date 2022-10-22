@@ -54,11 +54,25 @@ route.patch("/:username/create", async (req, res) => {
           host: req.params.username,
           isActive: true,
           gameStart: false,
+          role: false,
         },
       },
     },
   });
   res.json(userJoin);
 });
+
+route.patch("/:username/role", async (req, res) => {
+  const user = await prisma.user.update({
+    where: {
+      username: req.params.username,
+    },
+    data: {
+      role: req.body.role
+    },
+  });
+  res.json(user);
+});
+
 
 export default route;

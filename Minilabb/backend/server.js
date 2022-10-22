@@ -2,6 +2,7 @@ import express from "express";
 import "dotenv/config";
 import userRoute from "./routes/userRoutes.js"
 import gameRoute from "./routes/gameRoutes.js"
+import cors from 'cors';
 
 const server = express();
 
@@ -10,15 +11,10 @@ const PORT = process.env.PORT || 5000;
 
 server.use(express.json())
 
-server.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
-    res.header("Access-Control-Allow-Methods", "GET, PUT, PATCH, POST, DELETE");
-    next();
-  });
+const corsConfig = {
+  origin: "http://localhost:3000"
+}
+server.use(cors(corsConfig))
 
 server.use("/user", userRoute)
 server.use("/game", gameRoute)

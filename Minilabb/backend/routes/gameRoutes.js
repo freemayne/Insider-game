@@ -19,6 +19,7 @@ route.get("/:id", async (req, res) => {
       host: true,
       isActive: true,
       gameStart: true,
+      role: true,
       user: true,
     },
   });
@@ -57,6 +58,8 @@ route.patch("/:id/end", async (req, res) => {
     },
     data: {
       isActive: false,
+      gameStart: false,
+      role: false
     },
   });
 });
@@ -67,7 +70,9 @@ route.patch("/:id/start", async (req, res) => {
       game_id: parseInt(req.params.id),
     },
     data: {
+      isActive: true,
       gameStart: true,
+      role: true
     },
   });
   res.json(game);

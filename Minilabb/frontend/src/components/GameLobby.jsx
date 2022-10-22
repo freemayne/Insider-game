@@ -6,111 +6,131 @@ const GameLobby = () => {
   const [lobby, setLobby] = useState([]);
   const [lobbyUsers, setLobbyUsers] = useState([]);
   const [user, setUser] = useState({});
-  const [showButton, setShowButton] = useState(false);
-  const [role, setRole] = useState(false);
+  const [showButton, setShowButton] = useState(true);
+  const [role, setRole] = useState();
 
   const { id, username } = useParams();
+  const gameUrl = `http://localhost:5000/game/`;
+  const userUrl = `http://localhost:5000/user/`;
 
   useEffect(() => {
-    const fetchData = async (id) => {
-      const result = await fetch(`http://localhost:5000/game/${id}`);
-      const jsonResult = await result.json();
-      if (JSON.stringify(jsonResult) !== JSON.stringify(lobby)) {
+    setInterval(() => {
+      const fetchData = async (id) => {
+        const result = await fetch(`${gameUrl}${id}`);
+        const jsonResult = await result.json();
         setLobby(jsonResult);
         setLobbyUsers(jsonResult.user);
-      }
-    };
-    fetchData(id);
-  }, [lobbyUsers]);
+        setRole(jsonResult.role);
+      };
+      fetchData(id);
+    }, 1000);
+  }, []);
 
   useEffect(() => {
     const fetchUserData = async (username) => {
-      const result = await fetch(`http://localhost:5000/user/${username}`);
+      const result = await fetch(`${userUrl}${username}`);
       const jsonResult = await result.json();
       setUser(jsonResult);
     };
     fetchUserData(username);
   }, []);
 
-  console.log(lobby);
-  console.log(lobbyUsers);
-  console.log(user);
-  
-
+  const setRoleUser = async (u, r) => {
+    const data = {
+      role: r,
+    };
+    await fetch(`${userUrl}${u}/role`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+  };
   const modifyRoleList = () => {
     let roles = ["Master", "Insider"];
 
     for (let index = 2; index < lobbyUsers.length; index++) {
       roles.push("Commoner");
     }
-    console.log(roles);
+
     lobbyUsers.forEach((user) => {
       let index = Math.floor(Math.random() * roles.length);
-      console.log(index);
-      user.role = roles[index];
-      roles.splice(index, 1);
 
-      console.log(roles);
+      user.role = roles[index];
+      setRoleUser(user.username, user.role);
+      roles.splice(index, 1);
     });
   };
-  /*   const resetRoles = () => {
+
+  const resetRoles = () => {
     lobbyUsers.forEach((user) => {
       user.role = "";
+
+      setRoleUser(user.username, user.role);
     });
-  }; */
+  };
 
   const showRole = () => {
-    if (lobby.gameStart === true) {
-      let u = lobbyUsers.find((user) => user.username === username);
-      user.role = u.role;
-    }
+    let u = lobbyUsers.find((user) => user.username === username);
+    user.role = u.role;
 
-    return role ? `your role is ${user.role}` : null;
+    return `your role is ${user.role}`;
   };
 
   const handleStartGame = async () => {
-    const result = await fetch(`http://localhost:5000/game/${id}/start`, {
+    const result = await fetch(`${gameUrl}${id}/start`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
     });
-    if (result.status === 200) {
-      console.log("Game Started");
-    }
-    modifyRoleList();
-    setRole(true);
-    setShowButton(true);
   };
 
   const handleEndGame = async () => {
-    const result = await fetch(`http://localhost:5000/game/${id}/end`, {
+    const result = await fetch(`${gameUrl}${id}/end`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
     });
-    if (result.status === 200) {
-      console.log("Game Ended");
-    }
-    setShowButton(false);
-    setRole(false);
-    /* resetRoles(); */
   };
-  const IsHost = () => {
+
+  const isHost = () => {
     if (lobby.host === user.username) {
-      return !showButton ? startGame() : endGame();
+      return true;
     } else {
       return false;
     }
   };
 
   const startGame = () => {
-    return <Button onClick={handleStartGame}> Start Game</Button>;
+    return (
+      <Button
+        onClick={() => {
+          handleStartGame();
+          setShowButton(false);
+
+          modifyRoleList();
+        }}
+      >
+        {"Start Game"}
+      </Button>
+    );
   };
 
   const endGame = () => {
-    return <Button onClick={handleEndGame}> End Game</Button>;
+    return (
+      <Button
+        onClick={() => {
+          handleEndGame();
+          setShowButton(true);
+
+          resetRoles();
+        }}
+      >
+        {"End Game"}
+      </Button>
+    );
   };
 
   return (
     <Box>
+      {isHost() ? (showButton ? startGame() : endGame()) : null}
       <Box>
         {lobbyUsers.map((user) => (
           <Box key={user.user_id}>
@@ -118,8 +138,14 @@ const GameLobby = () => {
           </Box>
         ))}
       </Box>
-      <IsHost />
-      <Box>{showRole()}</Box>
+      <Box
+        sx={{
+          fontSize: 30,
+          color: "red",
+        }}
+      >
+        {role ? showRole() : null}
+      </Box>
     </Box>
   );
 };

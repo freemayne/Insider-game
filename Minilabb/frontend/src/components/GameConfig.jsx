@@ -4,10 +4,14 @@ import { Box, Button, Input, Typography } from "@mui/material";
 import imageInsider from "./InsiderGame.avif";
 
 const GameConfig = () => {
+
+  const gameUrl = `http://localhost:5000/game/`
+  const userUrl = `http://localhost:5000/user/`
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
   const [gameId, setGameId] = useState("");
+  const [isActive, setIsActive] = useState()
 
   const handleChangeUsername = (event) => {
     setUsername(event.target.value);
@@ -24,7 +28,7 @@ const GameConfig = () => {
       username: username,
     };
 
-    await fetch("http://localhost:5000/user", {
+    await fetch(userUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -39,21 +43,11 @@ const GameConfig = () => {
     };
 
     const result = await fetch(
-      `http://localhost:5000/user/${username}/create`,
+      `${userUrl}${username}/create`,
       {
         method: "PATCH",
         headers: { "Content-type": "application/join" },
         body: JSON.stringify(data),
-      }
-    );
-  };
-
-  const handleJoinGame = async () => {
-    const result = await fetch(
-      `http://localhost:5000/user/${username}/join/${gameId}`,
-      {
-        method: "PATCH",
-        headers: { "Content-type": "application/join" },
       }
     );
     if (result.status === 200) {
@@ -65,8 +59,40 @@ const GameConfig = () => {
     }
   };
 
-  return (
-    <Box>
+  const handleJoinGame = async () => {
+
+    const getLobbyData = async () => {
+      const results = await fetch(`${gameUrl}${gameId}`);
+      const jsonResults = await results.json();
+      console.log(jsonResults.isActive)
+      console.log(jsonResults.gameStart)
+      
+      if( jsonResults.isActive /* && !jsonResults.gameStart */){
+        
+        const result = await fetch(
+          `${userUrl}${username}/join/${gameId}`,
+          {
+            method: "PATCH",
+            headers: { "Content-type": "application/join" },
+          }
+          );
+          if (result.status === 200) {
+            console.log("true");
+            console.log(result);
+            navigate(`/${username}/game/${gameId}`);
+          } else {
+            console.log("false");
+          }
+        }else{
+          alert("Game is not active")
+        }
+        
+      };
+      getLobbyData()
+    };
+    
+    return (
+      <Box>
       <Typography
         sx={{
           display: "flex",

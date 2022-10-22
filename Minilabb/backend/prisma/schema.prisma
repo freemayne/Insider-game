@@ -19,5 +19,6 @@ model game {
   host String
   isActive Boolean
   gameStart Boolean
+  role Boolean
   user     user[]
 }
