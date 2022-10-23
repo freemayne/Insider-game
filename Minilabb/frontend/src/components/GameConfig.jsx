@@ -11,7 +11,6 @@ const GameConfig = () => {
 
   const [username, setUsername] = useState("");
   const [gameId, setGameId] = useState("");
-  const [isActive, setIsActive] = useState()
 
   const handleChangeUsername = (event) => {
     setUsername(event.target.value);

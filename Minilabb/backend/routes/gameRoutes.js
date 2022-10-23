@@ -19,6 +19,7 @@ route.get("/:id", async (req, res) => {
       host: true,
       isActive: true,
       gameStart: true,
+      currentWord: true,
       role: true,
       user: true,
     },
@@ -31,6 +32,7 @@ route.post("/", async (req, res) => {
     data: {
       host: req.params.username,
       isActive: true,
+      gameStart: false
     },
   });
   res.json(game);
@@ -59,7 +61,8 @@ route.patch("/:id/end", async (req, res) => {
     data: {
       isActive: false,
       gameStart: false,
-      role: false
+      role: false,
+      currentWord: undefined
     },
   });
 });
@@ -72,10 +75,23 @@ route.patch("/:id/start", async (req, res) => {
     data: {
       isActive: true,
       gameStart: true,
-      role: true
+      role: true,
+      currentWord: undefined
     },
   });
   res.json(game);
 });
+route.patch("/:id/word", async (req, res) => {
+  const game = await prisma.game.update({
+    where: {
+      game_id: parseInt(req.params.id),
+    },
+    data: {
+      currentWord: req.body.currentWord
+    },
+  });
+  res.json(game);
+});
+
 
 export default route;

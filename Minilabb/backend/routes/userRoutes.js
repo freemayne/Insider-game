@@ -55,6 +55,7 @@ route.patch("/:username/create", async (req, res) => {
           isActive: true,
           gameStart: false,
           role: false,
+          currentWord: ""
         },
       },
     },

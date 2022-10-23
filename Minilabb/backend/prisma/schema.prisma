@@ -20,5 +20,6 @@ model game {
   isActive Boolean
   gameStart Boolean
   role Boolean
+  currentWord String
   user     user[]
 }

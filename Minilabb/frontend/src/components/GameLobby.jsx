@@ -8,6 +8,7 @@ const GameLobby = () => {
   const [user, setUser] = useState({});
   const [showButton, setShowButton] = useState(true);
   const [role, setRole] = useState();
+  const [currentWord, setCurrentWord] = useState();
 
   const { id, username } = useParams();
   const gameUrl = `http://localhost:5000/game/`;
@@ -21,6 +22,7 @@ const GameLobby = () => {
         setLobby(jsonResult);
         setLobbyUsers(jsonResult.user);
         setRole(jsonResult.role);
+        setCurrentWord(jsonResult.currentWord)
       };
       fetchData(id);
     }, 1000);
@@ -34,6 +36,36 @@ const GameLobby = () => {
     };
     fetchUserData(username);
   }, []);
+
+  const handleStartGame = async () => {
+ 
+    const result = await fetch(`${gameUrl}${id}/start`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      
+    });
+  };
+
+  const handleEndGame = async () => {
+    const result = await fetch(`${gameUrl}${id}/end`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+    });
+  
+  };
+  const handleChooseWord = async () => {
+   
+
+      const data = {
+        currentWord: prompt("Please Type in the word"),
+      };
+      const result = await fetch(`${gameUrl}${id}/word`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+    
+    };
 
   const setRoleUser = async (u, r) => {
     const data = {
@@ -54,7 +86,6 @@ const GameLobby = () => {
 
     lobbyUsers.forEach((user) => {
       let index = Math.floor(Math.random() * roles.length);
-
       user.role = roles[index];
       setRoleUser(user.username, user.role);
       roles.splice(index, 1);
@@ -75,20 +106,12 @@ const GameLobby = () => {
 
     return `your role is ${user.role}`;
   };
-
-  const handleStartGame = async () => {
-    const result = await fetch(`${gameUrl}${id}/start`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-    });
-  };
-
-  const handleEndGame = async () => {
-    const result = await fetch(`${gameUrl}${id}/end`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-    });
-  };
+  const ShowWord = () => {
+  
+    
+    if(user.role === "Insider" || user.role === "Master")
+    return <Box> {currentWord}</Box>
+  }
 
   const isHost = () => {
     if (lobby.host === user.username) {
@@ -97,6 +120,14 @@ const GameLobby = () => {
       return false;
     }
   };
+  const IsMaster = () => {
+    if (user.role === "Master") {
+      return <Button onClick={handleChooseWord}>Choose Word</Button>
+    } else {
+      return false;
+    }
+  };
+  
 
   const startGame = () => {
     return (
@@ -104,8 +135,8 @@ const GameLobby = () => {
         onClick={() => {
           handleStartGame();
           setShowButton(false);
-
           modifyRoleList();
+        
         }}
       >
         {"Start Game"}
@@ -146,6 +177,8 @@ const GameLobby = () => {
       >
         {role ? showRole() : null}
       </Box>
+      <IsMaster/>
+      <ShowWord/>
     </Box>
   );
 };
