@@ -36,23 +36,21 @@ const GameConfig = () => {
     });
   };
   const handleHostGame = async () => {
-    const data = {
-      host: username,
-      isActive: true,
-    };
+
 
     const result = await fetch(
-      `${userUrl}${username}/create`,
+      `${gameUrl}/${username}/create`,
       {
-        method: "PATCH",
+        method: "POST",
         headers: { "Content-type": "application/join" },
-        body: JSON.stringify(data),
       }
     );
+    const jsonResult = await result.json()
+      console.log(jsonResult)
     if (result.status === 200) {
       console.log("true");
       console.log(result);
-      navigate(`/${username}/game/${gameId}`);
+      navigate(`/${username}/game/${jsonResult.game_id}`);
     } else {
       console.log("false");
     }

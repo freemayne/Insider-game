@@ -7,7 +7,7 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path="/game" element={<GameConfig />} />
+        <Route path="/" element={<GameConfig />} />
         <Route path="/:username/game/:id" element={<GameLobby/>} />
       </Routes>
     </div>
